@@ -1,109 +1,108 @@
-# Ex. No. 7: Use AFLogical OSE to Extract Data from an Android Device
+# Ex.No. 8: Use Steg-Expose to Detect Hidden Data in Images
 
 **Course / Lab:** Digital Forensics Lab
-**Experiment No.:** 7
-**Title:** Use AFLogical OSE to Extract Data from an Android Device
+**Experiment No.:** 8
+**Title:** Use Steg-Expose to Detect Hidden Data in Images
 
 ---
 
 ## Description
-**AFLogical OSE (Open Source Edition)** is a tool designed for logical data extraction from Android devices. As part of the Open Source Android Forensics project, it collects non-file system data like **contacts**, **messages (SMS/MMS)**, and **call logs** without needing root access.
+**StegExpose** is a specialized tool used for **steganography analysis**. It works by evaluating the **statistical properties** of an image to estimate the probability of hidden data being embedded within it. This process helps forensic investigators detect steganography techniques like Least Significant Bit (LSB) embedding.
 
 ---
 
-### Step 1: Prepare Your Environment
+## Prerequisites
 
-1.  **Download AFLogical OSE:**
-    * Visit the AFLogical OSE GitHub page and download the latest release, or clone the repository using Git.
-2.  **Install Java:**
-    * AFLogical OSE requires Java to run. Ensure Java is installed on your machine.
-3.  **Install Android Debug Bridge (ADB):**
-    * Download **ADB** (a command-line tool for device communication) from the Android Developer's website.
-    * Install it on your system and **add it to your system's PATH environment variable** for easy access from the command line.
-4.  **Enable USB Debugging on the Android Device:**
-    * Go to **Settings > About Phone** and tap **Build Number seven times** to enable Developer Options.
-    * Go to **Settings > Developer Options** and enable **USB Debugging**.
-
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.1.png)
-
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.3.png)
----
-
-### Step 2: Connect the Android Device to Your Computer
-
-1.  **Connect via USB:**
-    * Use a USB cable to connect the Android device to your computer.
-2.  **Verify ADB Connection:**
-    * Open Command Prompt/Terminal and run the following command:
-        ```bash
-        adb devices
-        ```
-    * **Verification:** The device should be listed, confirming that the ADB connection is ready.
-   
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.13.jpeg)
+- **Java Runtime Environment (JRE):** StegExpose is a Java-based application and requires JRE to run.
+- **StegExpose Tool:** Download the latest `.jar` file from the official StegExpose GitHub repository.
 
 ---
 
-### Step 3: Extract Data Using AFLogical OSE
+## Step-by-Step Process
 
-1.  **Push the APK to the Android Device:**
-    * Navigate to the AFLogical OSE directory in your terminal.
-    * Run the command to install the AFLogical OSE APK on the device:
-        ```bash
-        adb install aflogical.apk
-        ```
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.7.png)
+### 1. Download and Set Up StegExpose
 
-2.  **Launch the AFLogical OSE App on the Device:**
-    * On the Android device, open the newly installed AFLogical app.
+1.  **Download the tool:** Obtain the `StegExpose.jar` file from the GitHub repository.
+2.  **Install Java:** Ensure JRE is installed on your machine.
+3.  **Prepare environment:** Place the `StegExpose.jar` file in a dedicated working folder.
 
+![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/8.1.png)
+
+### 2. Select Images for Analysis
+
+* Collect the images you suspect might contain hidden data.
+* StegExpose supports common image formats such as **.png**, **.jpg**, and **.bmp**.
+
+![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/8.6.png)
+
+### 3. Open Command Line or Terminal
+
+* Navigate to the folder where the `StegExpose.jar` file is located using your Command Prompt (Windows) or Terminal (Linux/macOS).
+
+![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/8.8.png)
+
+
+### 4. Run StegExpose on an Image
+
+* Use the following command structure to analyze a single image for hidden data:
+
+    **Command Structure:**
+    ```bash
+    java -jar StegExpose.jar <image_file_path>
+    ```
+
+    **Example:**
+    ```bash
+    java -jar StegExpose.jar test_image.png
+    ```
+
+### 5. Analyze the Output
+
+* StegExpose calculates a **"suspect" score** ranging from 0 to 1. **The higher the score, the more likely steganography is present.**
+
+| Score Range | Interpretation (Suggested Thresholds) |
+| :---: | :--- |
+| **Less than 0.2** | Image is considered **clean** (no hidden data detected). |
+| **0.2 - 0.3** | **Possibly** some hidden data is present. |
+| **Above 0.3** | **Likely** that steganography is present. |
+
+* **Example Output Analysis:**
+    ```bash
+    java -jar StegExpose.jar suspect_image.png
+    ```
+    ```makefile
+    Analyzing suspect_image.png...
+    Result: 0.4
+    Steganography likely present
+    ```
+  ![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/8.10.png)
   
-3.  **Select and Start Data Extraction:**
-    * Select the desired data types (e.g., contacts, SMS, MMS, call logs) from the app's options.
-    * The app will start the extraction process, storing the data in **.csv files** on the device’s storage, typically in a directory named `aflogical`.
+  ![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/8.11.png)
 
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.12.jpeg)
+### 6. Batch Analysis (Multiple Images)
 
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.11.jpeg)
+* To check multiple images at once, specify the folder path containing the images:
 
----
+    **Command Structure:**
+    ```bash
+    java -jar StegExpose.jar <folder_path>
+    ```
 
-### Step 4: Transfer Extracted Data to Your Computer
+### 7. Advanced Options (Optional)
 
-1.  **Use ADB to Pull Data:**
-    * After extraction is complete, transfer the collected data files from the Android device to your computer using the `adb pull` command:
-        ```bash
-        adb pull /sdcard/aflogical /path/to/destination
-        ```
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.8.png)
+* To view additional parameters, such as options for adjusting detection sensitivity or output verbosity, use the `--help` flag:
 
-    * *Note: Replace `/path/to/destination` with the desired save location on your computer.*
-2.  **Verify the Data:**
-    * Navigate to the destination directory and check the `.csv` files to ensure all required data has been successfully transferred.
+    **Command:**
+    ```bash
+    java -jar StegExpose.jar --help
+    ```
 
----
+### 8. Review the Results
 
-### Step 5: Analyze the Extracted Data
-
-1.  **Open the CSV Files:**
-    * Use applications like **Excel**, **Google Sheets**, or a text editor to open and analyze the `.csv` files containing the extracted logical data.
-2.  **Review and Document:**
-    * Carefully review the data for any relevant evidence or information.
-    * Document all findings and prepare a comprehensive report.
-![images/exp1-disk-step1.png](https://github.com/Krishnabhargav08/DIGITAL-FORENSICS-LAB-EXERCISES/blob/main/images/7.9.png)
----
-
-### Step 6: Clean Up
-
-1.  **Uninstall AFLogical OSE:**
-    * Once data extraction is complete and verified, safely uninstall the app from the Android device:
-        ```bash
-        adb uninstall com.viaforensics.android.aflogical
-        ```
-2.  **Disconnect the Device:**
-    * Safely disconnect the Android device from your computer.
-
-By following these steps, you successfully perform a logical extraction on an Android device using AFLogical OSE, a valuable technique in digital forensic investigations.
+* Review the scores generated for each image and use the threshold values to determine which images require further forensic investigation to extract the suspected hidden data.
 
 **Result:**
-The experiment using Aflogical OSE was successfully performed. The tool efficiently extracted logical data such as contacts, messages, and media files from the mobile device, demonstrating its usefulness in mobile forensic data acquisition.
+
+The hidden data within the image was successfully detected using StegExpose. The analysis revealed that images with a suspect score above the threshold likely contain embedded steganographic content, confirming the tool’s effectiveness in steganography detection.
+
+
